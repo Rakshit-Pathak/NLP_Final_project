@@ -7,10 +7,6 @@ Created on Wed Dec 11 15:46:56 2019
 
 import json
 
-with open('./NLP_Final_Project/trainlist.txt', 'r') as f:
-    new_d = json.loads(f.read())
-
-
 from collections import namedtuple
 from typing import List, Tuple
 import torch
@@ -18,7 +14,6 @@ import torch.nn as nn
 import torch.nn.utils
 import torch.nn.functional as F
 from torch.nn.utils.rnn import pad_packed_sequence, pack_padded_sequence
-
 
 # this is from HW4
 def pad_sents(sents, pad_token):
@@ -40,6 +35,7 @@ def pad_sents(sents, pad_token):
 
 
 class LSTM_Model(nn.Module):
+    
     def __init__(self, hidden_size):
         super(LSTM_Model, self).__init__()
 
@@ -62,6 +58,7 @@ class LSTM_Model(nn.Module):
         # Using pack_padded_sequence
         source_lengths = [len(s) for s in sequences]
         sequences_padded = pad_sents(sequences,0) # assuming padding token is 0
+        
         sequences_packed_padded = torch.nn.utils.rnn.pack_padded_sequence(sequences_padded,source_lengths)
         
         # LSTM returns: outputs, (hidden_states, cell_states)
