@@ -58,6 +58,7 @@ class LSTM_Model(nn.Module):
         # Using pack_padded_sequence
         source_lengths = [len(s) for s in sequences]
         sequences_padded = pad_sents(sequences,0) # assuming padding token is 0
+        sequences_padded = torch.tensor(sequences_padded, dtype=torch.long)
         
         sequences_packed_padded = torch.nn.utils.rnn.pack_padded_sequence(sequences_padded,source_lengths)
         
