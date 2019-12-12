@@ -78,5 +78,10 @@ if __name__=='__main__':
     example_vector3 = wvc.word2vec(nltk.word_tokenize(example_sentence), is_tokenized=True)  # same as example2
 
     
-
+    batch_size = 10
+    sent_batch = [data_train[i][0] for i in range(10)]
+    example_vector_batch = [wvc.word2vec(sent, is_tokenized=False) for sent in sent_batch]
+    
+    
+    
     
