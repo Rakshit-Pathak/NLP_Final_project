@@ -17,7 +17,7 @@ import matplotlib.pyplot as plt
 from models_in_progress.baseline_lstm import LSTM_Model
 from utils.preprocessing import WVC
 
-with open('./trainlist.txt', 'r') as f:
+with open('data/trainlist.txt', 'r') as f:
     train_d = json.loads(f.read())
 
 
