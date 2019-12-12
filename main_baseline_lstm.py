@@ -32,7 +32,7 @@ num_train_batches = int(num_train_examples/batch_size)
 
 loss_function = torch.nn.BCELoss()
 
-with open('..\dict_compressed.pickle', 'rb') as f:
+with open('../dict_compressed.pickle', 'rb') as f:
     wv_dict = pickle.load(f)
     f.close()
 wvc = WVC(wv_dict)
