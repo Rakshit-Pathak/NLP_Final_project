@@ -39,10 +39,11 @@ class LSTM_Model(nn.Module):
     def __init__(self, hidden_size):
         super(LSTM_Model, self).__init__()
 
-
+        
         self.hidden_size = hidden_size
 
         self.LSTM = nn.LSTM(300, hidden_size, bidirectional=True)
+#        self.init_hidden = nn.
         
         # Classification Layer
         self.out = nn.Linear(hidden_size, 1)
@@ -50,7 +51,10 @@ class LSTM_Model(nn.Module):
     def forward(self, sequences):
         
         # sequences is of size [T,B,embedded_dim]
-        batch_size = sequences.size(1)
+        if type(sequences) is list:
+            batch_size = len(sequences)
+        else:
+            batch_size = sequences.size(0)
 
         # Initializing hidden state for first input using method defined below
         hidden = self.init_hidden(batch_size)
