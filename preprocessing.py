@@ -20,4 +20,4 @@ class WVC(object):  # word2vec converter
     def word2vec(self, words, is_tokenized=True):
         if not is_tokenized:
             words = nltk.word_tokenize(words)
-        return np.asarray([self.wv[word] if word in self.wv else self.wv["UNK"] for word in words])
+        return [self.wv[word] if word in self.wv else self.wv["UNK"] for word in words]

@@ -40,28 +40,46 @@ optimizer = torch.optim.Adam(model.parameters(), lr=.001)
 
 batch_size = 20
 num_train_examples = len(data_train)
-num_train_batches = 1 #int(num_train_examples/batch_size)
+num_train_batches = int(num_train_examples/batch_size)
 
 loss_function = torch.nn.BCELoss()
 
 # split apart the train_text and train_labels
 train_text,train_labels = zip(*data_train)
 
+print_every = 5
+batch_loss_avg = 0
+
 for batch_index in range(num_train_batches):
     
     batch_reviews_text = train_text[batch_index*batch_size:(batch_index+1)*batch_size]
     batch_labels = train_labels[batch_index*batch_size:(batch_index+1)*batch_size]
     
+    # embedding the text
     batch_reviews_vec = [wvc.word2vec(review, is_tokenized=False) for review in batch_reviews_text]
-    batch_reviews_vec = pad_sents(batch_reviews_vec,0)
-    batch_reviews_vec = np.stack(batch_reviews_vec, axis=1)  # creates np array of shape [max_T, batch_size, embedded_dim]
     
+    # sort the batch sentences by length (will be necessary for pack_padded_sequence)
+    review_lens = [-len(review) for review in batch_reviews_vec]
+    sort_inds = np.argsort(review_lens)
+    batch_reviews_vec_sorted = [batch_reviews_vec[i] for i in sort_inds]
+    batch_labels_sorted = [batch_labels[i] for i in sort_inds]
+
     optimizer.zero_grad()
-    predictions = model(batch_reviews_vec)
-    loss = loss_function(predictions,np.asarray(batch_labels))
+    predictions = model(batch_reviews_vec_sorted)
+    
+    loss = loss_function(torch.squeeze(predictions),torch.tensor(batch_labels_sorted, dtype=torch.float))
     loss.backward()
 
+    batch_loss = loss.sum()
+    batch_losses_val = batch_loss.item()
+    batch_loss_avg += batch_losses_val/print_every
+    
     # clip gradient
     torch.nn.utils.clip_grad_norm_(model.parameters(), 5.0) # using 5.0 as default from HW4
 
     optimizer.step()
+    
+    if batch_index % print_every == 0:
+        print('Batch '+str(batch_index)+'/'+str(num_train_batches)+' loss: '+str(batch_loss_avg))
+        batch_loss_avg = 0
+    
