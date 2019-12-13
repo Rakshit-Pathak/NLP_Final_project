@@ -189,7 +189,7 @@ for epoch in range(num_epochs):
     total_test_loss_avg = total_test_loss_avg/num_test_batches
     epoch_test_accuracy_hist.append(total_test_correct_avg)
     epoch_test_loss_hist.append(total_test_loss_avg)
-    print('EPOCH '+str(epoch+1)+', TOTAL EPOCH TEST ACCURACY = '+str(total_test_correct_avg)+' AVG TEST LOSS: '+str(batch_loss_avg))
+    print('EPOCH '+str(epoch+1)+', TOTAL EPOCH TEST ACCURACY = '+str(total_test_correct_avg)+' AVG TEST LOSS: '+str(total_test_loss_avg))
     print('----------------------------------------------')
     print('----------------------------------------------')
     
