@@ -43,7 +43,7 @@ model.train()
 
 optimizer = torch.optim.Adam(model.parameters(), lr=.001)
 
-num_epochs = 2
+num_epochs = 5
 batch_size = 20
 print_every = 5 # prints running stats every X batches
 num_train_examples = len(data_train)
@@ -140,7 +140,7 @@ for epoch in range(num_epochs):
         batch_correct = np.sum(np.equal(np.greater(np.squeeze(predictions.detach().numpy()),0.5),np.asarray(batch_labels_sorted)))/batch_size
         running_correct_avg += batch_correct/print_every
         total_epoch_correct_avg += batch_correct
-        total_epoch_loss_avg += batch_loss_avg
+        total_epoch_loss_avg += batch_loss_avg/batch_size
         end_batch = time.time()
         
         if batch_index % print_every == 0 and batch_index > 0:
