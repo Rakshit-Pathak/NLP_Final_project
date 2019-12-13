@@ -165,8 +165,8 @@ for epoch in range(num_epochs):
     print('running test on development set')
     for test_batch_index in range(num_test_batches):
     
-        batch_reviews_text = test_text[batch_index*batch_size:(batch_index+1)*batch_size]
-        batch_labels = test_labels[batch_index*batch_size:(batch_index+1)*batch_size]
+        batch_reviews_text = test_text[test_batch_index*batch_size:(test_batch_index+1)*batch_size]
+        batch_labels = test_labels[test_batch_index*batch_size:(test_batch_index+1)*batch_size]
        
         # embedding the text
         batch_reviews_vec = [wvc.word2vec(review, is_tokenized=False) for review in batch_reviews_text]
