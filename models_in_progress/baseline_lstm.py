@@ -6,7 +6,7 @@ Created on Wed Dec 11 15:46:56 2019
 """
 
 import json
-
+import numpy as np
 from collections import namedtuple
 from typing import List, Tuple
 import torch
@@ -15,21 +15,15 @@ import torch.nn.utils
 import torch.nn.functional as F
 from torch.nn.utils.rnn import pad_packed_sequence, pack_padded_sequence
 
-# this is from HW4
+# this is modified from HW4 -- instead it does padding after the embedding so it works on lists (length batch_size) of numpy arrays of shape [T,embedded_dim] 
 def pad_sents(sents, pad_token):
-    """ Pad list of sentences according to the longest sentence in the batch.
-    @param sents (list[list[str]]): list of sentences, where each sentence
-                                    is represented as a list of words
-    @param pad_token (str): padding token
-    @returns sents_padded (list[list[str]]): list of sentences where sentences shorter
-        than the max length sentence are padded out with the pad_token, such that
-        each sentences in the batch now has equal length.
-    """
+
     sents_padded = []
-    max_len = max(len(s) for s in sents)
+    max_len = max(np.shape(s)[0] for s in sents)
     for s in sents:
-        padded = [pad_token] * max_len
-        padded[:len(s)] = s
+        padded = np.zeros([max_len,300])
+        padded[:np.shape(s)[0]] = s
+        padded[np.shape(s)[0]:] = pad_token
         sents_padded.append(padded)
     return sents_padded
 
