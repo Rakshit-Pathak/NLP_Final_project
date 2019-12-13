@@ -15,18 +15,6 @@ import torch.nn.utils
 import torch.nn.functional as F
 from torch.nn.utils.rnn import pad_packed_sequence, pack_padded_sequence
 
-# this is modified from HW4 -- instead it does padding after the embedding so it works on lists (length batch_size) of numpy arrays of shape [T,embedded_dim] 
-#def pad_sents(sents, pad_token):
-#
-#    sents_padded = []
-#    max_len = max(np.shape(s)[0] for s in sents)
-#    for s in sents:
-#        padded = np.zeros([max_len,300])
-#        padded[:np.shape(s)[0]] = s
-#        padded[np.shape(s)[0]:] = pad_token
-#        sents_padded.append(padded)
-#    return sents_padded
-
 # this is from HW4
 def pad_sents(sents, pad_token):
     """ Pad list of sentences according to the longest sentence in the batch.
@@ -44,29 +32,6 @@ def pad_sents(sents, pad_token):
         padded[:len(s)] = s
         sents_padded.append(padded)
     return sents_padded
-
-# this is from HW4
-def batch_iter(data, batch_size, shuffle=False):
-    """ Yield batches of source and target sentences reverse sorted by length (largest to smallest).
-    @param data (list of (src_sent, tgt_sent)): list of tuples containing source and target sentence
-    @param batch_size (int): batch size
-    @param shuffle (boolean): whether to randomly shuffle the dataset
-    """
-    batch_num = math.ceil(len(data) / batch_size)
-    index_array = list(range(len(data)))
-
-    if shuffle:
-        np.random.shuffle(index_array)
-
-    for i in range(batch_num):
-        indices = index_array[i * batch_size: (i + 1) * batch_size]
-        examples = [data[idx] for idx in indices]
-
-        examples = sorted(examples, key=lambda e: len(e[0]), reverse=True)
-        src_sents = [e[0] for e in examples]
-        tgt_sents = [e[1] for e in examples]
-
-        yield src_sents, tgt_sents
 
 class LSTM_Model(nn.Module):
     
