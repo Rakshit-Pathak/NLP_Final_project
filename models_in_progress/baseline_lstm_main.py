@@ -15,9 +15,17 @@ import json
 import matplotlib.pyplot as plt
 from baseline_lstm import LSTM_Model
 
+import sys
+sys.path.append('../') # needed to access functions in the parent directory
+
+from preprocessing import WVC
 
 with open('../trainlist.txt', 'r') as f:
     train_d = json.loads(f.read())
+
+with open('dict_compressed.pickle', 'rb') as f:
+    wv_dict = pickle.load(f)
+    f.close()
 
 
 model = LSTM_Model(hidden_size=80)
@@ -32,7 +40,8 @@ num_train_batches = int(num_train_examples/batch_size)
 loss_function = torch.nn.BCELoss()
 
 for batch_index in range(num_train_batches):
-    batch_data = train_d[batch_index*batch_size:(batch_index+1)*batch_size]
+    
+    
     
     # TODO: convert batch_data to word vectors
     
