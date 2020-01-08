@@ -183,3 +183,6 @@ for epoch in range(num_epochs):
 #    print('----------------------------------------------')
 #    print('----------------------------------------------')
     
+
+torch.save(model.state_dict(), './constituency_parsing_10epochs_80hidden')
+
