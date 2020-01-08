@@ -35,13 +35,14 @@ def pad_sents(sents, pad_token):
 
 class LSTM_Model(nn.Module):
     
-    def __init__(self, hidden_size):
+    def __init__(self, hidden_size, input_dimension):
         super(LSTM_Model, self).__init__()
 
 
         self.hidden_size = hidden_size
-
-        self.LSTM = nn.LSTM(300, hidden_size, bidirectional=True)
+        self.input_dimension = input_dimension
+        
+        self.LSTM = nn.LSTM(input_dimension, hidden_size, bidirectional=True)
         
         # Classification Layer
         self.out = nn.Linear(2*hidden_size, 1) # 2*hidden_size because it will be using the hidden state at t=0 from the backward LSTM and t=T from the forward LSTM
@@ -54,7 +55,7 @@ class LSTM_Model(nn.Module):
         
         # Using pack_padded_sequence
         source_lengths = [len(s) for s in sequences]
-        sequences_padded = pad_sents(sequences,np.zeros([300],dtype='float32')) # assuming padding token is 0
+        sequences_padded = pad_sents(sequences,np.zeros([self.input_dimension],dtype='float32')) # assuming padding token is 0
         sequences_padded = torch.tensor(sequences_padded, dtype=torch.float)
         sequences_packed_padded = torch.nn.utils.rnn.pack_padded_sequence(torch.transpose(sequences_padded,0,1),source_lengths)
         

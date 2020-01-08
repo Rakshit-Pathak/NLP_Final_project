@@ -7,7 +7,7 @@ from tqdm import tqdm
 with open('./trainlist.txt', 'r') as f:
     data_train = json.loads(f.read())
     
-with open('./dict_compressed.pickle', 'rb') as f:
+with open('./models_in_progress/dict_compressed.pickle', 'rb') as f:
     wv_dict = pickle.load(f)
     f.close()
     
@@ -20,5 +20,5 @@ for reviews,score in tqdm(zip(train_text,train_labels)):
     review = wvc.const_preprocess(reviews)
     const_preprocess_review.append([review,score])
     
-with open('const_preprocess_review.json','w') as f:
-    json.dump(const_preprocess_review,f)
+with open('const_preprocess_review.pkl','wb') as f:
+    pickle.dump(const_preprocess_review,f)

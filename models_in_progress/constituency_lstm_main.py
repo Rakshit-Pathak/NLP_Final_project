@@ -11,20 +11,24 @@ sys.path.append('../') # needed to access functions in the parent directory
 
 from constituency_preprocess import WVC
 
-with open('../trainlist.txt', 'r') as f:
-    data_train = json.loads(f.read())
+#with open('../trainlist.txt', 'r') as f:
+#    data_train = json.loads(f.read())
+
+with open('./const_preprocess_review.pkl', 'rb') as f:
+    data_train = pickle.load(f)
+    f.close()
 
 with open('../testlist.txt', 'r') as f:
     data_test = json.loads(f.read())
 
-with open('../dict_compressed.pickle', 'rb') as f:
+with open('./dict_compressed.pickle', 'rb') as f:
     wv_dict = pickle.load(f)
     f.close()
 
 ###### preprocessing 
 wvc = WVC(wv_dict)
 
-model = LSTM_Model(hidden_size=80)
+model = LSTM_Model(hidden_size=80,input_dimension=316)
 model.train()
 
 optimizer = torch.optim.Adam(model.parameters(), lr=.001)
@@ -146,36 +150,36 @@ for epoch in range(num_epochs):
     total_epoch_loss_avg = 0
     
     # at end of epoch do a test loop 
-    total_test_correct_avg = 0
-    total_test_loss_avg = 0
-    print('running test on development set')
-    for test_batch_index in range(num_test_batches):
-    
-        batch_reviews_text = test_text[test_batch_index*batch_size:(test_batch_index+1)*batch_size]
-        batch_labels = test_labels[test_batch_index*batch_size:(test_batch_index+1)*batch_size]
-       
-        # embedding the text
-        batch_reviews_vec = [wvc.const_preprocess(review) for review in batch_reviews_text]
-
-        # sort the batch sentences by length (will be necessary for pack_padded_sequence)
-        review_lens = [-len(review) for review in batch_reviews_vec]
-        sort_inds = np.argsort(review_lens)
-        batch_reviews_vec_sorted = [batch_reviews_vec[i] for i in sort_inds]
-        batch_labels_sorted = [batch_labels[i] for i in sort_inds]
-        
-        predictions = model(batch_reviews_vec_sorted)
-    
-        batch_loss = loss.sum()
-        batch_losses_val = batch_loss.item()
-        total_test_loss_avg += batch_losses_val/batch_size
-        batch_correct = np.sum(np.equal(np.greater(np.squeeze(predictions.detach().numpy()),0.5),np.asarray(batch_labels_sorted)))/batch_size
-        total_test_correct_avg += batch_correct
-    
-    total_test_correct_avg = total_test_correct_avg/num_test_batches
-    total_test_loss_avg = total_test_loss_avg/num_test_batches
-    epoch_test_accuracy_hist.append(total_test_correct_avg)
-    epoch_test_loss_hist.append(total_test_loss_avg)
-    print('EPOCH '+str(epoch+1)+', TOTAL EPOCH TEST ACCURACY = '+str(total_test_correct_avg)+' AVG TEST LOSS: '+str(total_test_loss_avg))
-    print('----------------------------------------------')
-    print('----------------------------------------------')
+#    total_test_correct_avg = 0
+#    total_test_loss_avg = 0
+#    print('running test on development set')
+#    for test_batch_index in range(num_test_batches):
+#    
+#        batch_reviews_text = test_text[test_batch_index*batch_size:(test_batch_index+1)*batch_size]
+#        batch_labels = test_labels[test_batch_index*batch_size:(test_batch_index+1)*batch_size]
+#       
+#        # embedding the text
+#        batch_reviews_vec = [wvc.const_preprocess(review) for review in batch_reviews_text]
+#
+#        # sort the batch sentences by length (will be necessary for pack_padded_sequence)
+#        review_lens = [-len(review) for review in batch_reviews_vec]
+#        sort_inds = np.argsort(review_lens)
+#        batch_reviews_vec_sorted = [batch_reviews_vec[i] for i in sort_inds]
+#        batch_labels_sorted = [batch_labels[i] for i in sort_inds]
+#        
+#        predictions = model(batch_reviews_vec_sorted)
+#    
+#        batch_loss = loss.sum()
+#        batch_losses_val = batch_loss.item()
+#        total_test_loss_avg += batch_losses_val/batch_size
+#        batch_correct = np.sum(np.equal(np.greater(np.squeeze(predictions.detach().numpy()),0.5),np.asarray(batch_labels_sorted)))/batch_size
+#        total_test_correct_avg += batch_correct
+#    
+#    total_test_correct_avg = total_test_correct_avg/num_test_batches
+#    total_test_loss_avg = total_test_loss_avg/num_test_batches
+#    epoch_test_accuracy_hist.append(total_test_correct_avg)
+#    epoch_test_loss_hist.append(total_test_loss_avg)
+#    print('EPOCH '+str(epoch+1)+', TOTAL EPOCH TEST ACCURACY = '+str(total_test_correct_avg)+' AVG TEST LOSS: '+str(total_test_loss_avg))
+#    print('----------------------------------------------')
+#    print('----------------------------------------------')
     

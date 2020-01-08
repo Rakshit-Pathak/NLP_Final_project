@@ -38,7 +38,7 @@ with open('dict_compressed.pickle', 'rb') as f:
 ###### preprocessing 
 wvc = WVC(wv_dict)
 
-model = LSTM_Model(hidden_size=80)
+model = LSTM_Model(hidden_size=80,input_dimension=300)
 model.train()
 
 optimizer = torch.optim.Adam(model.parameters(), lr=.001)
