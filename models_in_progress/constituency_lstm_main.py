@@ -183,6 +183,15 @@ for epoch in range(num_epochs):
 #    print('----------------------------------------------')
 #    print('----------------------------------------------')
     
-
-torch.save(model.state_dict(), './constituency_parsing_10epochs_80hidden')
-
+    torch.save({
+                'model_state_dict': model.state_dict(),
+                'optimizer_state_dict': optimizer.state_dict(),
+                'training_history': epoch_train_accuracy_hist,
+                'test_history': epoch_test_accuracy_hist
+                }, './const_parsing_10epochs_80hidden')
+    
+    checkpoint = torch.load('./const_parsing_10epochs_80hidden')
+    model.load_state_dict(checkpoint['model_state_dict'])
+    optimizer.load_state_dict(checkpoint['optimizer_state_dict'])
+    epoch_train_accuracy_hist_loaded = checkpoint['training_history']
+    epoch_test_accuracy_hist_loaded = checkpoint['test_history']
