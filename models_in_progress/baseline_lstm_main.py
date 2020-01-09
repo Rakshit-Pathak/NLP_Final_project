@@ -18,6 +18,8 @@ from baseline_lstm import LSTM_Model
 
 from baseline_lstm import pad_sents
 
+from datetime import datetime
+
 import time
 
 import sys
@@ -193,3 +195,12 @@ for epoch in range(num_epochs):
     print('----------------------------------------------')
     print('----------------------------------------------')
     
+    now = datetime.now()
+    timestamp = datetime.timestamp(now)
+    
+    torch.save({
+            'model_state_dict': model.state_dict(),
+            'optimizer_state_dict': optimizer.state_dict(),
+            'training_history': epoch_train_accuracy_hist,
+            'test_history': epoch_test_accuracy_hist
+            }, './baseline_epoch'+str(epoch)+'_80hidden'+now.strftime("%m%d%Y_%H_%M_%S"))

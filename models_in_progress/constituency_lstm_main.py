@@ -200,5 +200,5 @@ for epoch in range(num_epochs):
                 'optimizer_state_dict': optimizer.state_dict(),
                 'training_history': epoch_train_accuracy_hist,
                 'test_history': epoch_test_accuracy_hist
-                }, './const_parsing_10epochs_80hidden'+now.strftime("%m%d%Y_%H_%M_%S"))
+                }, './const_parsing_'+str(epoch)+'epoch_80hidden'+now.strftime("%m%d%Y_%H_%M_%S"))
     
