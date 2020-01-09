@@ -3,19 +3,18 @@ import pickle
 import numpy as np
 import torch
 import torch.nn.utils
-import json
 from baseline_lstm import LSTM_Model
 
 import sys
 sys.path.append('../') # needed to access functions in the parent directory
 
-from dependency_preprocess import WVC
+from dep_train_process import WVC
 
-with open('../trainlist.txt', 'r') as f:
-    data_train = json.loads(f.read())
+with open('../dep_preprocess_review.pkl', 'rb') as f:
+    data_train = pickle.load(f)
 
-with open('../testlist.txt', 'r') as f:
-    data_test = json.loads(f.read())
+with open('../dep_preprocess_review_test.pkl', 'rb') as f:
+    data_test = pickle.load(f)
 
 with open('../dict_compressed.pickle', 'rb') as f:
     wv_dict = pickle.load(f)
@@ -24,7 +23,7 @@ with open('../dict_compressed.pickle', 'rb') as f:
 ###### preprocessing 
 wvc = WVC(wv_dict)
 
-model = LSTM_Model(hidden_size=80)
+model = LSTM_Model(hidden_size=80,input_dimension=647)
 model.train()
 
 optimizer = torch.optim.Adam(model.parameters(), lr=.001)
@@ -72,7 +71,7 @@ for epoch in range(num_epochs):
         start = time.time()
         
         # embedding the text
-        batch_reviews_vec = [wvc.dep_preprocess(review) for review in batch_reviews_text]
+        batch_reviews_vec = [wvc.dep_process(review) for review in batch_reviews_text]
         
         end = time.time()
         if (print_timing_statements):
@@ -155,7 +154,7 @@ for epoch in range(num_epochs):
         batch_labels = test_labels[test_batch_index*batch_size:(test_batch_index+1)*batch_size]
        
         # embedding the text
-        batch_reviews_vec = [wvc.dep_preprocess(review) for review in batch_reviews_text]
+        batch_reviews_vec = [wvc.dep_process(review) for review in batch_reviews_text]
 
         # sort the batch sentences by length (will be necessary for pack_padded_sequence)
         review_lens = [-len(review) for review in batch_reviews_vec]
@@ -178,4 +177,12 @@ for epoch in range(num_epochs):
     print('EPOCH '+str(epoch+1)+', TOTAL EPOCH TEST ACCURACY = '+str(total_test_correct_avg)+' AVG TEST LOSS: '+str(total_test_loss_avg))
     print('----------------------------------------------')
     print('----------------------------------------------')
+    now = datetime.now()
+    timestamp = datetime.timestamp(now)
     
+    torch.save({
+                'model_state_dict': model.state_dict(),
+                'optimizer_state_dict': optimizer.state_dict(),
+                'training_history': epoch_train_accuracy_hist,
+                'test_history': epoch_test_accuracy_hist
+                }, './const_parsing_'+str(epoch)+'epoch_80hidden'+now.strftime("%m%d%Y_%H_%M_%S"))

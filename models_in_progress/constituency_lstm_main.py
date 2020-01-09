@@ -16,15 +16,15 @@ from constituency_preprocess import WVC
 #with open('../trainlist.txt', 'r') as f:
 #    data_train = json.loads(f.read())
 
-with open('./const_preprocess_review.pkl', 'rb') as f:
+with open('../const_preprocess_review.pkl', 'rb') as f:
     data_train = pickle.load(f)
     f.close()
 
-with open('./const_preprocess_test_review.pkl', 'rb') as f:
+with open('../const_preprocess_test_review.pkl', 'rb') as f:
     data_test = pickle.load(f)
     f.close()
 
-with open('./dict_compressed.pickle', 'rb') as f:
+with open('../dict_compressed.pickle', 'rb') as f:
     wv_dict = pickle.load(f)
     f.close()
 
