@@ -20,8 +20,9 @@ with open('./const_preprocess_review.pkl', 'rb') as f:
     data_train = pickle.load(f)
     f.close()
 
-with open('../testlist.txt', 'r') as f:
-    data_test = json.loads(f.read())
+with open('./const_preprocess_test_review.pkl', 'rb') as f:
+    data_test = pickle.load(f)
+    f.close()
 
 with open('./dict_compressed.pickle', 'rb') as f:
     wv_dict = pickle.load(f)
